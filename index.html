@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="description" content="MTD Diagnostics — IVD Solutions for your Laboratory. Made in Italy."/>
 <title>MTD Diagnostics — Worldclass Manufacture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -11,436 +12,404 @@
   --navy:#080f1e;--navy2:#0d1a2e;--navy3:#132540;--navy4:#1a3155;
   --gold:#c8a84b;--gold2:#e2c96e;--gold3:#f0dfa0;
   --white:#f5f2eb;--muted:#7a8fa8;--text:#c8c2b6;
-  --glass:rgba(13,26,46,0.7);
+  --radius:2px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* ─── CURSOR ─── */
-.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s;mix-blend-mode:difference}
-.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(200,168,75,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease;mix-blend-mode:difference}
+/* ─── CURSOR (desktop only) ─── */
+@media(pointer:fine){
+  .cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s;mix-blend-mode:difference}
+  .cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(200,168,75,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease}
+}
 
 /* ─── NAV ─── */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.4rem 4rem;display:flex;justify-content:space-between;align-items:center;transition:all .4s}
-nav.scrolled{background:rgba(8,15,30,.92);backdrop-filter:blur(20px);padding:1rem 4rem;border-bottom:1px solid rgba(200,168,75,.12)}
-.nav-logo{font-family:'Space Mono',monospace;font-size:.78rem;letter-spacing:.22em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.2rem 4rem;display:flex;justify-content:space-between;align-items:center;transition:all .4s}
+nav.scrolled{background:rgba(8,15,30,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:.9rem 4rem;border-bottom:1px solid rgba(200,168,75,.12)}
+.nav-logo{font-family:'Space Mono',monospace;font-size:.78rem;letter-spacing:.22em;color:var(--gold);text-decoration:none;text-transform:uppercase;flex-shrink:0}
 .nav-logo span{color:var(--white)}
-.nav-links{display:flex;gap:2.8rem;list-style:none}
-.nav-links a{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;position:relative;transition:color .3s}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;position:relative;transition:color .3s;white-space:nowrap}
 .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s}
 .nav-links a:hover{color:var(--gold)}
 .nav-links a:hover::after{width:100%}
-.nav-lang{display:flex;gap:1rem;font-family:'Space Mono',monospace;font-size:.65rem}
-.nav-lang a{color:var(--muted);text-decoration:none;transition:color .3s}
-.nav-lang a:hover,.nav-lang a.active{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:2rem}
+.nav-lang{display:flex;gap:.8rem;font-family:'Space Mono',monospace;font-size:.65rem}
+.nav-lang button{color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.1em;transition:color .3s;padding:.2rem .1rem}
+.nav-lang button:hover,.nav-lang button.active{color:var(--gold)}
+.nav-lang .sep{color:rgba(122,143,168,.3);align-self:center}
 
-/* ─── CANVAS HERO ─── */
+/* hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.5rem;background:none;border:none;z-index:600}
+.hamburger span{display:block;width:24px;height:1.5px;background:var(--white);transition:all .35s;transform-origin:center}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* mobile drawer */
+.mobile-menu{position:fixed;inset:0;background:var(--navy2);z-index:490;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2.5rem;transform:translateX(100%);transition:transform .45s cubic-bezier(.77,0,.18,1)}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-menu a{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--white);text-decoration:none;transition:color .3s}
+.mobile-menu a:hover{color:var(--gold2)}
+.mobile-lang{display:flex;gap:1.2rem;margin-top:1rem}
+.mobile-lang button{font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.18em;color:var(--muted);background:none;border:1px solid rgba(122,143,168,.2);padding:.5rem 1rem;cursor:pointer;transition:all .3s}
+.mobile-lang button.active,.mobile-lang button:hover{color:var(--gold);border-color:var(--gold)}
+
+/* ─── CANVAS ─── */
 #hero-canvas{position:absolute;inset:0;z-index:0}
 
 /* ─── HERO ─── */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
-.hero-inner{position:relative;z-index:2;max-width:780px;padding:8rem 5rem}
-.hero-tag{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;display:flex;align-items:center;gap:.8rem;opacity:0;animation:fadeUp .8s .3s forwards}
-.hero-tag::before{content:'';width:40px;height:1px;background:var(--gold)}
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,7vw,6.5rem);font-weight:300;line-height:1.04;margin-bottom:1.5rem;opacity:0;animation:fadeUp .9s .5s forwards}
-.hero-title em{font-style:italic;color:var(--gold2)}
-.hero-title .line{display:block;overflow:hidden}
-.hero-sub{font-size:1rem;line-height:1.8;color:var(--muted);max-width:440px;margin-bottom:3rem;opacity:0;animation:fadeUp .8s .7s forwards}
-.hero-ctas{display:flex;gap:1.2rem;opacity:0;animation:fadeUp .8s .9s forwards}
-.btn-gold{display:inline-flex;align-items:center;gap:.7rem;padding:.95rem 2.2rem;background:var(--gold);color:var(--navy);font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:all .3s;position:relative;overflow:hidden}
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+.hero-inner{position:relative;z-index:2;padding:7rem 5rem 5rem}
+.hero-tag{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.8rem;display:flex;align-items:center;gap:.8rem;opacity:0;animation:fadeUp .8s .3s forwards}
+.hero-tag::before{content:'';width:36px;height:1px;background:var(--gold);flex-shrink:0}
+h1.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6.5rem);font-weight:300;line-height:1.05;margin-bottom:1.5rem;opacity:0;animation:fadeUp .9s .5s forwards;max-width:800px}
+h1.hero-title em{font-style:italic;color:var(--gold2)}
+.hero-sub{font-size:clamp(.9rem,2vw,1rem);line-height:1.8;color:var(--muted);max-width:460px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .8s .7s forwards}
+.hero-ctas{display:flex;gap:1.2rem;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .9s forwards}
+.btn-gold{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;background:var(--gold);color:var(--navy);font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .btn-gold::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:translateX(-101%);transition:transform .35s}
 .btn-gold:hover::before{transform:translateX(0)}
-.btn-gold span{position:relative;z-index:1}
-.btn-outline{display:inline-flex;align-items:center;gap:.7rem;padding:.95rem 2.2rem;background:transparent;color:var(--white);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(255,255,255,.18);transition:all .3s}
+.btn-gold>span{position:relative;z-index:1}
+.btn-outline{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;background:transparent;color:var(--white);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(255,255,255,.2);transition:all .3s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-
-/* hero scroll indicator */
-.hero-scroll{position:absolute;bottom:3rem;left:5rem;display:flex;align-items:center;gap:1rem;z-index:2;opacity:0;animation:fadeUp .6s 1.2s forwards}
+.hero-scroll{position:absolute;bottom:2.5rem;left:5rem;display:flex;align-items:center;gap:1rem;z-index:2;opacity:0;animation:fadeUp .6s 1.2s forwards}
 .hero-scroll span{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-.scroll-track{width:50px;height:1px;background:rgba(255,255,255,.15);position:relative;overflow:hidden}
+.scroll-track{width:44px;height:1px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
 .scroll-fill{position:absolute;left:-100%;top:0;width:100%;height:100%;background:var(--gold);animation:scrollSlide 2s infinite}
 @keyframes scrollSlide{0%{left:-100%}100%{left:100%}}
+.hero-stats{position:absolute;right:5rem;bottom:4rem;z-index:2;display:flex;gap:2.5rem;opacity:0;animation:fadeUp .8s 1s forwards}
+.hstat-num{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:300;color:var(--gold2);line-height:1}
+.hstat-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:.25rem}
 
-/* hero right stats */
-.hero-stats{position:absolute;right:5rem;bottom:5rem;z-index:2;display:flex;gap:3rem;opacity:0;animation:fadeUp .8s 1s forwards}
-.hstat{text-align:center}
-.hstat-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--gold2);line-height:1}
-.hstat-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+/* ─── MARQUEE ─── */
+.marquee-wrap{background:var(--navy3);padding:1rem 0;overflow:hidden;border-top:1px solid rgba(200,168,75,.1);border-bottom:1px solid rgba(200,168,75,.1)}
+.marquee-track{display:flex;width:max-content;animation:marquee 24s linear infinite}
+.marquee-item{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:0 2.5rem;white-space:nowrap}
+.marquee-item span{color:var(--gold);margin-right:.8rem}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ─── SECTION COMMON ─── */
+.s-tag{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:.7rem}
+.s-tag::before{content:'';width:24px;height:1px;background:var(--gold);flex-shrink:0}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.4rem);font-weight:300;line-height:1.1}
+.s-title em{font-style:italic;color:var(--gold2)}
+.s-body{font-size:.88rem;line-height:1.85;color:var(--muted)}
 
 /* ─── REVEAL ─── */
-.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s ease}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .85s ease,transform .85s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .9s ease,transform .9s ease}
-.reveal-left.visible{opacity:1;transform:translateX(0)}
-.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .9s ease,transform .9s ease}
-.reveal-right.visible{opacity:1;transform:translateX(0)}
-
-/* ─── SECTION BASE ─── */
-.s-tag{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:.7rem}
-.s-tag::before{content:'';width:28px;height:1px;background:var(--gold)}
-.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:300;line-height:1.1}
-.s-title em{font-style:italic;color:var(--gold2)}
-.s-body{font-size:.9rem;line-height:1.85;color:var(--muted)}
+.reveal-l{opacity:0;transform:translateX(-36px);transition:opacity .85s ease,transform .85s ease}
+.reveal-l.visible{opacity:1;transform:translateX(0)}
+.reveal-r{opacity:0;transform:translateX(36px);transition:opacity .85s ease,transform .85s ease}
+.reveal-r.visible{opacity:1;transform:translateX(0)}
+.delay1{transition-delay:.1s}.delay2{transition-delay:.2s}.delay3{transition-delay:.3s}.delay4{transition-delay:.4s}
 
 /* ─── ABOUT ─── */
-.about{padding:9rem 5rem;background:var(--navy2);display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:center}
-.about-text .s-title{margin-bottom:1.2rem}
-.about-text .s-body{max-width:480px;margin-bottom:2.5rem}
+.about{padding:8rem 5rem;background:var(--navy2);display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
 .pillars{display:flex;flex-direction:column}
-.pillar{padding:1.8rem 0;border-bottom:1px solid rgba(200,168,75,.1);display:grid;grid-template-columns:3rem 1fr;gap:1.2rem;cursor:default;transition:all .3s}
+.pillar{padding:1.6rem 0;border-bottom:1px solid rgba(200,168,75,.1);display:grid;grid-template-columns:2.8rem 1fr;gap:1rem;transition:all .3s;cursor:default}
 .pillar:first-child{border-top:1px solid rgba(200,168,75,.1)}
-.pillar:hover{background:rgba(200,168,75,.03);padding-left:.5rem}
-.p-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:rgba(200,168,75,.2);line-height:1;transition:color .3s}
+.pillar:hover{padding-left:.4rem}
+.p-num{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:rgba(200,168,75,.2);line-height:1;transition:color .3s}
 .pillar:hover .p-num{color:var(--gold)}
-.p-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;margin-bottom:.3rem;transition:color .3s}
+.p-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;margin-bottom:.3rem;transition:color .3s}
 .pillar:hover .p-title{color:var(--gold2)}
 .p-text{font-size:.8rem;line-height:1.75;color:var(--muted)}
 
-/* ─── MARQUEE ─── */
-.marquee-wrap{background:var(--navy3);padding:1.2rem 0;overflow:hidden;border-top:1px solid rgba(200,168,75,.1);border-bottom:1px solid rgba(200,168,75,.1)}
-.marquee-track{display:flex;width:max-content;animation:marquee 22s linear infinite}
-.marquee-item{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:0 3rem;white-space:nowrap}
-.marquee-item span{color:var(--gold);margin-right:1rem}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* ─── NUMBERS ─── */
+.numbers{padding:5rem;background:var(--navy3);display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.numbers::before{content:'';position:absolute;top:0;left:5rem;right:5rem;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.25}
+.ncard{padding:2.5rem 2rem;border-right:1px solid rgba(200,168,75,.1);text-align:center}
+.ncard:last-child{border-right:none}
+.ncard-num{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--gold2);line-height:1;margin-bottom:.5rem}
+.ncard-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 
 /* ─── PRODUCTS ─── */
-.products{padding:9rem 5rem;background:var(--navy)}
-.products-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:5rem}
-.reagents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(200,168,75,.08)}
-.rcard{background:var(--navy2);padding:2.4rem 2rem;position:relative;overflow:hidden;cursor:pointer;transition:background .4s;text-decoration:none;color:inherit;display:block}
-.rcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,168,75,.07) 0%,transparent 60%);opacity:0;transition:opacity .4s}
-.rcard:hover{background:var(--navy3)}
+.products{padding:8rem 5rem;background:var(--navy)}
+.products-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem;flex-wrap:wrap;gap:1.5rem}
+.reagents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(200,168,75,.07)}
+.rcard{background:var(--navy2);padding:2.2rem 1.8rem;position:relative;overflow:hidden;cursor:pointer;transition:background .4s;text-decoration:none;color:inherit;display:block;-webkit-tap-highlight-color:transparent}
+.rcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,168,75,.06),transparent 60%);opacity:0;transition:opacity .4s}
+.rcard:hover,.rcard:focus-visible{background:var(--navy3);outline:none}
 .rcard:hover::before{opacity:1}
-.rcard-num{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:rgba(200,168,75,.3);margin-bottom:1.6rem;transition:color .3s}
+.rcard-num{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.18em;color:rgba(200,168,75,.28);margin-bottom:1.4rem;transition:color .3s}
 .rcard:hover .rcard-num{color:var(--gold)}
-.rcard-icon{width:44px;height:44px;margin-bottom:1.4rem;position:relative}
+.rcard-icon{width:40px;height:40px;margin-bottom:1.2rem}
 .rcard-icon svg{width:100%;height:100%}
-.rcard-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;margin-bottom:.6rem;transition:color .3s}
+.rcard-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;margin-bottom:.5rem;transition:color .3s}
 .rcard:hover .rcard-name{color:var(--gold2)}
 .rcard-desc{font-size:.75rem;color:var(--muted);line-height:1.65}
-.rcard-arrow{position:absolute;top:2rem;right:2rem;width:28px;height:28px;border:1px solid rgba(200,168,75,.2);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:rgba(200,168,75,.3);transition:all .35s;transform:rotate(0deg)}
+.rcard-arrow{position:absolute;top:1.8rem;right:1.8rem;width:26px;height:26px;border:1px solid rgba(200,168,75,.18);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:rgba(200,168,75,.28);transition:all .35s}
 .rcard:hover .rcard-arrow{background:var(--gold);color:var(--navy);border-color:var(--gold);transform:rotate(-45deg)}
 .rcard.wide{grid-column:span 2}
 
-/* ─── NUMBERS ─── */
-.numbers{padding:6rem 5rem;background:var(--navy3);display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
-.numbers::before{content:'';position:absolute;top:0;left:5rem;right:5rem;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.3}
-.ncard{padding:3rem 2.5rem;border-right:1px solid rgba(200,168,75,.1);text-align:center}
-.ncard:last-child{border-right:none}
-.ncard-num{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;color:var(--gold2);line-height:1;margin-bottom:.5rem}
-.ncard-suffix{font-size:1.8rem}
-.ncard-label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-
 /* ─── INSTRUMENTS ─── */
-.instruments{padding:9rem 5rem;background:var(--navy2)}
-.instruments-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:5rem;background:rgba(200,168,75,.08)}
-.icard{background:var(--navy);padding:4rem 3.5rem;position:relative;overflow:hidden;transition:background .4s}
+.instruments{padding:8rem 5rem;background:var(--navy2)}
+.instr-header{text-align:center;max-width:600px;margin:0 auto 5rem}
+.instruments-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(200,168,75,.07)}
+.icard{background:var(--navy);padding:3.5rem 3rem;position:relative;overflow:hidden;transition:background .4s}
 .icard:hover{background:var(--navy2)}
 .icard-line{position:absolute;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .6s}
 .icard:hover .icard-line{width:100%}
-.icard-tag{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem}
-.icard-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;margin-bottom:1.2rem;line-height:1.1}
-.icard-text{font-size:.85rem;line-height:1.85;color:var(--muted);margin-bottom:2.5rem}
-.icard-features{display:flex;flex-direction:column;gap:.7rem}
-.icard-feat{font-size:.78rem;color:var(--text);display:flex;align-items:center;gap:.8rem}
-.icard-feat::before{content:'';width:20px;height:1px;background:var(--gold);flex-shrink:0;transition:width .3s}
-.icard:hover .icard-feat::before{width:30px}
+.icard-tag{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.icard-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;margin-bottom:1rem;line-height:1.1}
+.icard-text{font-size:.84rem;line-height:1.85;color:var(--muted);margin-bottom:2rem}
+.icard-feats{display:flex;flex-direction:column;gap:.6rem}
+.icard-feat{font-size:.76rem;color:var(--text);display:flex;align-items:center;gap:.7rem}
+.icard-feat::before{content:'';width:18px;height:1px;background:var(--gold);flex-shrink:0;transition:width .3s}
+.icard:hover .icard-feat::before{width:26px}
 
 /* ─── CERTS ─── */
-.certs{padding:5rem;background:var(--navy);display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;border-top:1px solid rgba(200,168,75,.08);border-bottom:1px solid rgba(200,168,75,.08)}
-.cert{display:flex;flex-direction:column;align-items:center;gap:.8rem;opacity:.5;transition:opacity .4s,transform .4s;cursor:default}
+.certs{padding:4.5rem 5rem;background:var(--navy);display:flex;justify-content:center;gap:3.5rem;flex-wrap:wrap;border-top:1px solid rgba(200,168,75,.08);border-bottom:1px solid rgba(200,168,75,.08)}
+.cert{display:flex;flex-direction:column;align-items:center;gap:.7rem;opacity:.45;transition:opacity .4s,transform .4s;cursor:default}
 .cert:hover{opacity:1;transform:translateY(-4px)}
-.cert-ring{width:70px;height:70px;border:1px solid rgba(200,168,75,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.58rem;color:var(--gold);text-align:center;line-height:1.3;transition:border-color .3s,box-shadow .3s}
-.cert:hover .cert-ring{border-color:var(--gold);box-shadow:0 0 20px rgba(200,168,75,.2)}
-.cert-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-align:center}
+.cert-ring{width:64px;height:64px;border:1px solid rgba(200,168,75,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.55rem;color:var(--gold);text-align:center;line-height:1.3;transition:border-color .3s,box-shadow .3s}
+.cert:hover .cert-ring{border-color:var(--gold);box-shadow:0 0 18px rgba(200,168,75,.18)}
+.cert-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center}
 
 /* ─── CONTACT ─── */
-.contact{padding:9rem 5rem;background:var(--navy2);display:grid;grid-template-columns:1fr 1.2fr;gap:7rem;align-items:start}
-.contact-info .s-title{margin-bottom:1.5rem}
-.contact-info .s-body{margin-bottom:3rem}
-.cinfo-block{margin-bottom:2rem}
-.cinfo-label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
-.cinfo-val{font-size:.9rem;color:var(--text);line-height:1.7}
+.contact{padding:8rem 5rem;background:var(--navy2);display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:start}
+.cinfo-block{margin-bottom:1.8rem}
+.cinfo-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.cinfo-val{font-size:.88rem;color:var(--text);line-height:1.7}
 .cinfo-val a{color:var(--text);text-decoration:none;transition:color .3s}
 .cinfo-val a:hover{color:var(--gold2)}
-.contact-form{display:flex;flex-direction:column;gap:1.4rem}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
-.fgroup{display:flex;flex-direction:column;gap:.4rem}
-.flabel{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.finput,.ftextarea,.fselect{background:rgba(8,15,30,.8);border:1px solid rgba(200,168,75,.12);padding:.9rem 1.1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .3s,box-shadow .3s;resize:none;-webkit-appearance:none}
+.contact-form{display:flex;flex-direction:column;gap:1.2rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.fgroup{display:flex;flex-direction:column;gap:.35rem}
+.flabel{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.finput,.ftextarea,.fselect{background:rgba(8,15,30,.8);border:1px solid rgba(200,168,75,.12);padding:.85rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .3s,box-shadow .3s;resize:none;-webkit-appearance:none;border-radius:0;width:100%}
 .finput::placeholder,.ftextarea::placeholder{color:rgba(122,143,168,.35)}
 .finput:focus,.ftextarea:focus,.fselect:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.08)}
-.ftextarea{height:130px}
-.fselect{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%23c8a84b'%3E%3Cpath d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
+.ftextarea{height:120px}
+.fselect{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' fill='%23c8a84b'%3E%3Cpath d='M5 7L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
 .fselect option{background:#0d1a2e}
-.fprivacy{display:flex;align-items:center;gap:.7rem;font-size:.78rem;color:var(--muted);cursor:pointer}
-.fprivacy input{accent-color:var(--gold)}
+.fprivacy{display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--muted);cursor:pointer}
+.fprivacy input{accent-color:var(--gold);width:16px;height:16px;flex-shrink:0}
 .fprivacy a{color:var(--gold);text-decoration:none}
 
 /* ─── FOOTER ─── */
-footer{background:#040a14;padding:5rem 5rem 3rem;border-top:1px solid rgba(200,168,75,.1)}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;margin-bottom:4rem}
-.footer-logo{font-family:'Space Mono',monospace;font-size:.9rem;letter-spacing:.2em;color:var(--gold);margin-bottom:1rem}
-.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--muted);line-height:1.6;margin-bottom:1.5rem}
-.footer-vat{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:rgba(122,143,168,.4)}
-.footer-col-title{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem}
-.footer-links{list-style:none;display:flex;flex-direction:column;gap:.7rem}
-.footer-links a{font-size:.82rem;color:var(--muted);text-decoration:none;transition:color .3s;display:flex;align-items:center;gap:.5rem}
-.footer-links a::before{content:'';width:0;height:1px;background:var(--gold);transition:width .3s}
-.footer-links a:hover::before{width:12px}
+footer{background:#040a14;padding:4.5rem 5rem 2.5rem;border-top:1px solid rgba(200,168,75,.1)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3.5rem;margin-bottom:3.5rem}
+.footer-logo{font-family:'Space Mono',monospace;font-size:.88rem;letter-spacing:.2em;color:var(--gold);margin-bottom:.8rem}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--muted);line-height:1.6;margin-bottom:1.2rem}
+.footer-vat{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.1em;color:rgba(122,143,168,.35)}
+.footer-col-title{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.65rem}
+.footer-links a{font-size:.8rem;color:var(--muted);text-decoration:none;transition:color .3s;display:flex;align-items:center;gap:.4rem}
+.footer-links a::before{content:'';width:0;height:1px;background:var(--gold);transition:width .3s;flex-shrink:0}
+.footer-links a:hover::before{width:10px}
 .footer-links a:hover{color:var(--gold2)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:2.5rem;border-top:1px solid rgba(200,168,75,.08);font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:rgba(122,143,168,.4)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid rgba(200,168,75,.08);font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.08em;color:rgba(122,143,168,.35);flex-wrap:wrap;gap:.5rem}
 
 /* ─── ANIMATIONS ─── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 
-/* ─── MOBILE ─── */
-@media(max-width:900px){
-  nav{padding:1.2rem 2rem}.nav-links{display:none}
-  .hero-inner{padding:8rem 2rem 6rem}
-  .hero-stats{right:2rem;bottom:3rem;gap:1.5rem}
-  .about,.instruments-grid,.contact{grid-template-columns:1fr;gap:3rem}
-  .about{padding:5rem 2rem}.products{padding:5rem 2rem}
-  .products-header{flex-direction:column;gap:1.5rem;align-items:flex-start}
+/* ─────────────────── MOBILE ─────────────────── */
+@media(max-width:768px){
+  nav{padding:1rem 1.4rem}
+  nav.scrolled{padding:.85rem 1.4rem}
+  .nav-links,.nav-lang{display:none}
+  .hamburger{display:flex}
+  .hero-inner{padding:6rem 1.5rem 4rem}
+  .hero-stats{right:1.5rem;bottom:2rem;gap:1.5rem}
+  .hstat-num{font-size:2rem}
+  .hero-scroll{left:1.5rem;bottom:1.5rem}
+  .about{grid-template-columns:1fr;gap:3rem;padding:5rem 1.5rem}
+  .numbers{grid-template-columns:1fr 1fr;padding:3rem 1.5rem}
+  .ncard{border-right:none;border-bottom:1px solid rgba(200,168,75,.1);padding:2rem 1rem}
+  .ncard:nth-child(odd){border-right:1px solid rgba(200,168,75,.1)}
+  .ncard:last-child{border-bottom:none}
+  .products{padding:5rem 1.5rem}
   .reagents-grid{grid-template-columns:1fr 1fr}
   .rcard.wide{grid-column:span 2}
-  .numbers{grid-template-columns:1fr 1fr}
-  .ncard{border-right:none;border-bottom:1px solid rgba(200,168,75,.1)}
-  .instruments{padding:5rem 2rem}
-  .certs{gap:2rem;padding:3rem 2rem}
-  .contact{padding:5rem 2rem}
-  footer{padding:3rem 2rem 2rem}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:2.5rem}
+  .rcard{padding:1.6rem 1.3rem}
+  .instruments{padding:5rem 1.5rem}
+  .instr-header{margin-bottom:3rem}
+  .instruments-grid{grid-template-columns:1fr}
+  .icard{padding:2.5rem 2rem}
+  .certs{gap:2rem;padding:3rem 1.5rem}
+  .cert-ring{width:54px;height:54px}
+  .contact{grid-template-columns:1fr;gap:3rem;padding:5rem 1.5rem}
   .frow{grid-template-columns:1fr}
+  footer{padding:3rem 1.5rem 2rem}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .footer-bottom{font-size:.52rem}
+  .btn-gold,.btn-outline{padding:.85rem 1.6rem;font-size:.68rem}
+  .products-header{flex-direction:column;align-items:flex-start}
 }
+@media(max-width:400px){
+  .reagents-grid{grid-template-columns:1fr}
+  .rcard.wide{grid-column:span 1}
+  .numbers{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr}
+  h1.hero-title{font-size:2.6rem}
+  .hero-stats{display:none}
+}
+
+/* ─── WHATSAPP FAB ─── */
+.fab{position:fixed;bottom:1.8rem;right:1.8rem;z-index:400;width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.35);transition:transform .3s,box-shadow .3s;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.fab:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(37,211,102,.5)}
+.fab svg{width:26px;height:26px;fill:#fff}
 </style>
 </head>
 <body>
 
+<!-- custom cursor (desktop) -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- NAV -->
 <nav id="navbar">
-  <a href="#" class="nav-logo">MTD <span>Diagnostics</span></a>
+  <a href="#home" class="nav-logo">MTD <span>Diagnostics</span></a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#products">Products</a></li>
-    <li><a href="#instruments">Instruments</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#about" data-i18n="nav.about">About</a></li>
+    <li><a href="#products" data-i18n="nav.products">Products</a></li>
+    <li><a href="#instruments" data-i18n="nav.instruments">Instruments</a></li>
+    <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
-  <div class="nav-lang">
-    <a href="#" class="active">EN</a>
-    <a href="#">IT</a>
-    <a href="#">ES</a>
+  <div class="nav-right">
+    <div class="nav-lang">
+      <button onclick="setLang('en')" class="active" id="btn-en">EN</button>
+      <span class="sep">·</span>
+      <button onclick="setLang('it')" id="btn-it">IT</button>
+      <span class="sep">·</span>
+      <button onclick="setLang('es')" id="btn-es">ES</button>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" class="mm-link" data-i18n="nav.about">About</a>
+  <a href="#products" class="mm-link" data-i18n="nav.products">Products</a>
+  <a href="#instruments" class="mm-link" data-i18n="nav.instruments">Instruments</a>
+  <a href="#contact" class="mm-link" data-i18n="nav.contact">Contact</a>
+  <div class="mobile-lang">
+    <button onclick="setLang('en')" id="mbtn-en" class="active">EN</button>
+    <button onclick="setLang('it')" id="mbtn-it">IT</button>
+    <button onclick="setLang('es')" id="mbtn-es">ES</button>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="home">
   <canvas id="hero-canvas"></canvas>
-
   <div class="hero-inner">
-    <div class="hero-tag">IVD Solutions — Made in Italy</div>
-    <h1 class="hero-title">
-      <span class="line">Precision</span>
-      <span class="line"><em>Diagnostics</em></span>
-      <span class="line">for the World</span>
-    </h1>
-    <p class="hero-sub">Reliable reagents and instrumentation for disease screening and diagnosis. European quality, global distribution.</p>
+    <div class="hero-tag" data-i18n="hero.tag">IVD Solutions — Made in Italy</div>
+    <h1 class="hero-title" data-i18n-html="hero.title">Precision<br><em>Diagnostics</em><br>for the World</h1>
+    <p class="hero-sub" data-i18n="hero.sub">Reliable reagents and instrumentation for disease screening and diagnosis. European quality, global distribution.</p>
     <div class="hero-ctas">
-      <a href="#products" class="btn-gold"><span>Explore Products →</span></a>
-      <a href="#about" class="btn-outline">Our Story</a>
+      <a href="#products" class="btn-gold"><span data-i18n="hero.cta1">Explore Products →</span></a>
+      <a href="#about" class="btn-outline" data-i18n="hero.cta2">Our Story</a>
     </div>
   </div>
-
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <div class="scroll-track"><div class="scroll-fill"></div></div>
-  </div>
-
+  <div class="hero-scroll"><span data-i18n="hero.scroll">Scroll</span><div class="scroll-track"><div class="scroll-fill"></div></div></div>
   <div class="hero-stats">
-    <div class="hstat">
-      <div class="hstat-num" data-count="7">0</div>
-      <div class="hstat-label">Product Lines</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-num" data-count="3">0</div>
-      <div class="hstat-label">Languages</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-num" data-text="CE">—</div>
-      <div class="hstat-label">Certified</div>
-    </div>
+    <div class="hstat"><div class="hstat-num" data-count="7">7+</div><div class="hstat-label" data-i18n="hero.stat1">Product Lines</div></div>
+    <div class="hstat"><div class="hstat-num">3</div><div class="hstat-label" data-i18n="hero.stat2">Languages</div></div>
+    <div class="hstat"><div class="hstat-num">CE</div><div class="hstat-label" data-i18n="hero.stat3">Certified</div></div>
   </div>
 </section>
 
 <!-- MARQUEE -->
 <div class="marquee-wrap">
-  <div class="marquee-track">
-    <div class="marquee-item"><span>✦</span> Clinical Chemistry</div>
-    <div class="marquee-item"><span>✦</span> Turbidimetry</div>
-    <div class="marquee-item"><span>✦</span> Coagulation</div>
-    <div class="marquee-item"><span>✦</span> Hematology</div>
-    <div class="marquee-item"><span>✦</span> Slide Agglutination</div>
-    <div class="marquee-item"><span>✦</span> Controls & Calibrators</div>
-    <div class="marquee-item"><span>✦</span> Made in Italy</div>
-    <div class="marquee-item"><span>✦</span> CE Certified</div>
-    <div class="marquee-item"><span>✦</span> Global Distribution</div>
-    <div class="marquee-item"><span>✦</span> Clinical Chemistry</div>
-    <div class="marquee-item"><span>✦</span> Turbidimetry</div>
-    <div class="marquee-item"><span>✦</span> Coagulation</div>
-    <div class="marquee-item"><span>✦</span> Hematology</div>
-    <div class="marquee-item"><span>✦</span> Slide Agglutination</div>
-    <div class="marquee-item"><span>✦</span> Controls & Calibrators</div>
-    <div class="marquee-item"><span>✦</span> Made in Italy</div>
-    <div class="marquee-item"><span>✦</span> CE Certified</div>
-    <div class="marquee-item"><span>✦</span> Global Distribution</div>
-  </div>
+  <div class="marquee-track" id="marqueeTrack"></div>
 </div>
 
 <!-- ABOUT -->
 <section class="about" id="about">
-  <div class="about-text reveal-left">
-    <div class="s-tag">Who We Are</div>
-    <h2 class="s-title">Experienced team<br>of <em>diagnostic</em><br>professionals</h2>
-    <p class="s-body" style="margin-top:1rem;max-width:440px">We provide laboratories worldwide with a wide range of reliable reagents and instrumentation for disease screening and diagnosis. Our roots are Italian, our reach is global.</p>
+  <div class="reveal-l">
+    <div class="s-tag" data-i18n="about.tag">Who We Are</div>
+    <h2 class="s-title" data-i18n-html="about.title">Experienced team<br>of <em>diagnostic</em><br>professionals</h2>
+    <p class="s-body" style="margin-top:1rem;max-width:460px" data-i18n="about.body">We provide laboratories worldwide with a wide range of reliable reagents and instrumentation for disease screening and diagnosis.</p>
   </div>
-  <div class="pillars reveal-right">
+  <div class="pillars reveal-r">
     <div class="pillar">
       <div class="p-num">01</div>
-      <div><div class="p-title">European Quality</div><div class="p-text">EU IVD Directive compliant, certified by accredited third-party bodies for safety and performance.</div></div>
+      <div><div class="p-title" data-i18n="about.p1title">European Quality</div><div class="p-text" data-i18n="about.p1text">EU IVD Directive compliant, certified by accredited third-party bodies for safety and performance.</div></div>
     </div>
     <div class="pillar">
       <div class="p-num">02</div>
-      <div><div class="p-title">Global Distribution</div><div class="p-text">From our manufacturing site in Caserta to laboratories across the world — efficient and reliable.</div></div>
+      <div><div class="p-title" data-i18n="about.p2title">Global Distribution</div><div class="p-text" data-i18n="about.p2text">From our manufacturing site in Caserta to laboratories across the world — efficient and reliable.</div></div>
     </div>
     <div class="pillar">
       <div class="p-num">03</div>
-      <div><div class="p-title">Flexible Production</div><div class="p-text">Adaptable formulation and packaging to meet each partner's specific needs, from small clinics to large hospital facilities.</div></div>
+      <div><div class="p-title" data-i18n="about.p3title">Flexible Production</div><div class="p-text" data-i18n="about.p3text">Adaptable formulation and packaging to meet each partner's specific needs, from small clinics to large hospital facilities.</div></div>
     </div>
   </div>
 </section>
 
 <!-- NUMBERS -->
 <div class="numbers">
-  <div class="ncard reveal">
-    <div class="ncard-num"><span class="counter" data-target="7">0</span><span class="ncard-suffix">+</span></div>
-    <div class="ncard-label">Product Categories</div>
-  </div>
-  <div class="ncard reveal">
-    <div class="ncard-num"><span class="counter" data-target="3">0</span></div>
-    <div class="ncard-label">Languages</div>
-  </div>
-  <div class="ncard reveal">
-    <div class="ncard-num"><span class="counter" data-target="2">0</span></div>
-    <div class="ncard-label">Instrument Lines</div>
-  </div>
-  <div class="ncard reveal">
-    <div class="ncard-num">CE</div>
-    <div class="ncard-label">EU Certified</div>
-  </div>
+  <div class="ncard reveal"><div class="ncard-num"><span class="counter" data-target="7">0</span>+</div><div class="ncard-label" data-i18n="numbers.n1">Product Categories</div></div>
+  <div class="ncard reveal delay1"><div class="ncard-num"><span class="counter" data-target="3">0</span></div><div class="ncard-label" data-i18n="numbers.n2">Languages</div></div>
+  <div class="ncard reveal delay2"><div class="ncard-num"><span class="counter" data-target="2">0</span></div><div class="ncard-label" data-i18n="numbers.n3">Instrument Lines</div></div>
+  <div class="ncard reveal delay3"><div class="ncard-num">CE</div><div class="ncard-label" data-i18n="numbers.n4">EU Certified</div></div>
 </div>
 
 <!-- PRODUCTS -->
 <section class="products" id="products">
   <div class="products-header reveal">
     <div>
-      <div class="s-tag">Our Reagents</div>
-      <h2 class="s-title">Liquid & ready-to-use<br><em>solutions</em> for your lab</h2>
+      <div class="s-tag" data-i18n="products.tag">Our Reagents</div>
+      <h2 class="s-title" data-i18n-html="products.title">Liquid & ready-to-use<br><em>solutions</em> for your lab</h2>
     </div>
-    <a href="#" class="btn-outline">View All →</a>
+    <a href="#contact" class="btn-outline" data-i18n="products.cta">View All →</a>
   </div>
-
   <div class="reagents-grid">
-    <a href="#" class="rcard reveal">
+    <a href="#contact" class="rcard reveal">
       <div class="rcard-num">01</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <path d="M16 5v13L6 32h32L28 18V5"/><line x1="13" y1="5" x2="31" y2="5"/>
-          <circle cx="22" cy="28" r="3" fill="rgba(200,168,75,.15)"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Clinical Chemistry</div>
-      <div class="rcard-desc">Comprehensive enzyme & substrate assays for routine biochemistry panels.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><path d="M16 5v13L6 32h32L28 18V5"/><line x1="13" y1="5" x2="31" y2="5"/><circle cx="22" cy="28" r="3" fill="rgba(200,168,75,.15)"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r1name">Clinical Chemistry</div>
+      <div class="rcard-desc" data-i18n="products.r1desc">Comprehensive enzyme & substrate assays for routine biochemistry panels.</div>
       <div class="rcard-arrow">↗</div>
     </a>
-    <a href="#" class="rcard reveal">
+    <a href="#contact" class="rcard reveal delay1">
       <div class="rcard-num">02</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <circle cx="22" cy="22" r="12"/><circle cx="22" cy="22" r="5" fill="rgba(200,168,75,.15)"/>
-          <line x1="22" y1="4" x2="22" y2="10"/><line x1="22" y1="34" x2="22" y2="40"/>
-          <line x1="4" y1="22" x2="10" y2="22"/><line x1="34" y1="22" x2="40" y2="22"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Turbidimetry</div>
-      <div class="rcard-desc">High-sensitivity turbidimetric reagents for protein quantification.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><circle cx="22" cy="22" r="12"/><circle cx="22" cy="22" r="5" fill="rgba(200,168,75,.15)"/><line x1="22" y1="4" x2="22" y2="10"/><line x1="22" y1="34" x2="22" y2="40"/><line x1="4" y1="22" x2="10" y2="22"/><line x1="34" y1="22" x2="40" y2="22"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r2name">Turbidimetry</div>
+      <div class="rcard-desc" data-i18n="products.r2desc">High-sensitivity turbidimetric reagents for protein quantification.</div>
       <div class="rcard-arrow">↗</div>
     </a>
-    <a href="#" class="rcard reveal">
+    <a href="#contact" class="rcard reveal delay2">
       <div class="rcard-num">03</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <rect x="7" y="12" width="13" height="13" rx="1"/><rect x="24" y="19" width="13" height="13" rx="1"/>
-          <path d="M20 18l4 2"/><circle cx="13" cy="18" r="2" fill="rgba(200,168,75,.3)"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Slide Agglutination</div>
-      <div class="rcard-desc">Fast, reliable latex agglutination tests for serological screening.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><rect x="7" y="12" width="13" height="13" rx="1"/><rect x="24" y="19" width="13" height="13" rx="1"/><path d="M20 18l4 2"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r3name">Slide Agglutination</div>
+      <div class="rcard-desc" data-i18n="products.r3desc">Fast, reliable latex agglutination tests for serological screening.</div>
       <div class="rcard-arrow">↗</div>
     </a>
-    <a href="#" class="rcard reveal">
+    <a href="#contact" class="rcard reveal delay3">
       <div class="rcard-num">04</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <path d="M9 35 C9 20 35 20 35 8"/><circle cx="9" cy="35" r="4" fill="rgba(200,168,75,.15)"/>
-          <circle cx="35" cy="8" r="4" fill="rgba(200,168,75,.15)"/>
-          <path d="M16 26 C16 18 26 18 26 12" stroke-dasharray="2 2"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Coagulation</div>
-      <div class="rcard-desc">PT, APTT and fibrinogen reagents for coagulation cascade monitoring.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><path d="M9 35 C9 20 35 20 35 8"/><circle cx="9" cy="35" r="4" fill="rgba(200,168,75,.15)"/><circle cx="35" cy="8" r="4" fill="rgba(200,168,75,.15)"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r4name">Coagulation</div>
+      <div class="rcard-desc" data-i18n="products.r4desc">PT, APTT and fibrinogen reagents for coagulation cascade monitoring.</div>
       <div class="rcard-arrow">↗</div>
     </a>
-    <a href="#" class="rcard reveal">
+    <a href="#contact" class="rcard reveal">
       <div class="rcard-num">05</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <path d="M22 7L38 36H6Z"/><line x1="14" y1="27" x2="30" y2="27"/>
-          <line x1="18" y1="20" x2="26" y2="20"/>
-          <circle cx="22" cy="33" r="2" fill="rgba(200,168,75,.3)"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Controls & Calibrators</div>
-      <div class="rcard-desc">Multi-analyte controls and calibrators for QC and instrument setup.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><path d="M22 7L38 36H6Z"/><line x1="14" y1="27" x2="30" y2="27"/><line x1="18" y1="20" x2="26" y2="20"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r5name">Controls & Calibrators</div>
+      <div class="rcard-desc" data-i18n="products.r5desc">Multi-analyte controls and calibrators for QC and instrument setup.</div>
       <div class="rcard-arrow">↗</div>
     </a>
-    <a href="#" class="rcard reveal">
+    <a href="#contact" class="rcard reveal delay1">
       <div class="rcard-num">06</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <path d="M11 12h22v18a11 11 0 0 1-22 0V12z"/>
-          <line x1="16" y1="22" x2="28" y2="22" stroke-dasharray="2 2"/>
-          <line x1="16" y1="28" x2="28" y2="28" stroke-dasharray="2 2"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Washing Solutions</div>
-      <div class="rcard-desc">Optimised buffer solutions for automated analysers.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><path d="M11 12h22v18a11 11 0 0 1-22 0V12z"/><line x1="16" y1="22" x2="28" y2="22" stroke-dasharray="2 2"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r6name">Washing Solutions</div>
+      <div class="rcard-desc" data-i18n="products.r6desc">Optimised buffer and washing solutions for automated analysers.</div>
       <div class="rcard-arrow">↗</div>
     </a>
-    <a href="#" class="rcard wide reveal">
+    <a href="#contact" class="rcard wide reveal delay2">
       <div class="rcard-num">07</div>
-      <div class="rcard-icon">
-        <svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2">
-          <circle cx="14" cy="24" r="7"/><circle cx="30" cy="24" r="7"/>
-          <circle cx="22" cy="14" r="7"/>
-          <line x1="14" y1="17" x2="19" y2="16"/><line x1="30" y1="17" x2="25" y2="16"/>
-        </svg>
-      </div>
-      <div class="rcard-name">Hematology</div>
-      <div class="rcard-desc">Complete blood count diluents, lysing agents, and controls for hematology analysers — compatible with major platforms.</div>
+      <div class="rcard-icon"><svg viewBox="0 0 44 44" fill="none" stroke="#c8a84b" stroke-width="1.2"><circle cx="14" cy="24" r="7"/><circle cx="30" cy="24" r="7"/><circle cx="22" cy="14" r="7"/></svg></div>
+      <div class="rcard-name" data-i18n="products.r7name">Hematology</div>
+      <div class="rcard-desc" data-i18n="products.r7desc">Complete blood count diluents, lysing agents, and controls for hematology analysers — compatible with major platforms.</div>
       <div class="rcard-arrow">↗</div>
     </a>
   </div>
@@ -448,80 +417,83 @@ footer{background:#040a14;padding:5rem 5rem 3rem;border-top:1px solid rgba(200,1
 
 <!-- INSTRUMENTS -->
 <section class="instruments" id="instruments">
-  <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto">
-    <div class="s-tag" style="justify-content:center">Our Instruments</div>
-    <h2 class="s-title">Two lines of devices,<br><em>proven</em> performance</h2>
-    <p class="s-body" style="margin-top:1rem">Thoroughly selected and tested by our QC and technical engineers, certified to European electrical safety and electromagnetic standards.</p>
+  <div class="instr-header reveal">
+    <div class="s-tag" style="justify-content:center" data-i18n="instruments.tag">Our Instruments</div>
+    <h2 class="s-title" data-i18n-html="instruments.title">Two lines of devices,<br><em>proven</em> performance</h2>
+    <p class="s-body" style="margin-top:1rem" data-i18n="instruments.sub">Thoroughly selected and tested by our QC and technical engineers, certified to European standards.</p>
   </div>
   <div class="instruments-grid">
-    <div class="icard reveal-left">
+    <div class="icard reveal-l">
       <div class="icard-line"></div>
-      <div class="icard-tag">Line 01 — Clinical Chemistry</div>
-      <div class="icard-title">Chemistry<br>Analysers</div>
-      <div class="icard-text">A range of semi-automatic and fully-automated biochemistry analysers, from compact benchtop models ideal for small clinics to high-throughput platforms for large hospital laboratories.</div>
-      <div class="icard-features">
-        <div class="icard-feat">Compact & high-throughput options</div>
-        <div class="icard-feat">Optimised for MTD reagent portfolio</div>
-        <div class="icard-feat">CE-marked & EMC certified</div>
-        <div class="icard-feat">Full technical support</div>
+      <div class="icard-tag" data-i18n="instruments.i1tag">Line 01 — Clinical Chemistry</div>
+      <div class="icard-title" data-i18n-html="instruments.i1title">Chemistry<br>Analysers</div>
+      <div class="icard-text" data-i18n="instruments.i1text">A range of semi-automatic and fully-automated biochemistry analysers, from compact benchtop models ideal for small clinics to high-throughput platforms for large hospital laboratories.</div>
+      <div class="icard-feats">
+        <div class="icard-feat" data-i18n="instruments.i1f1">Compact & high-throughput options</div>
+        <div class="icard-feat" data-i18n="instruments.i1f2">Optimised for MTD reagent portfolio</div>
+        <div class="icard-feat" data-i18n="instruments.i1f3">CE-marked & EMC certified</div>
+        <div class="icard-feat" data-i18n="instruments.i1f4">Full technical support</div>
       </div>
     </div>
-    <div class="icard reveal-right">
+    <div class="icard reveal-r">
       <div class="icard-line"></div>
-      <div class="icard-tag">Line 02 — Hematology</div>
-      <div class="icard-title">Hematology<br>Analysers</div>
-      <div class="icard-text">3-diff and 5-diff hematology counters designed for daily laboratory routine, delivering reliable CBC results with user-friendly interfaces and low maintenance requirements.</div>
-      <div class="icard-features">
-        <div class="icard-feat">3-diff and 5-diff platforms</div>
-        <div class="icard-feat">Touch-screen interface</div>
-        <div class="icard-feat">LIS connectivity</div>
-        <div class="icard-feat">Low reagent consumption</div>
+      <div class="icard-tag" data-i18n="instruments.i2tag">Line 02 — Hematology</div>
+      <div class="icard-title" data-i18n-html="instruments.i2title">Hematology<br>Analysers</div>
+      <div class="icard-text" data-i18n="instruments.i2text">3-diff and 5-diff hematology counters designed for daily laboratory routine, delivering reliable CBC results with user-friendly interfaces and low maintenance requirements.</div>
+      <div class="icard-feats">
+        <div class="icard-feat" data-i18n="instruments.i2f1">3-diff and 5-diff platforms</div>
+        <div class="icard-feat" data-i18n="instruments.i2f2">Touch-screen interface</div>
+        <div class="icard-feat" data-i18n="instruments.i2f3">LIS connectivity</div>
+        <div class="icard-feat" data-i18n="instruments.i2f4">Low reagent consumption</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CERTIFICATIONS -->
+<!-- CERTS -->
 <div class="certs">
   <div class="cert reveal"><div class="cert-ring">CE IVD</div><div class="cert-label">CE Marked</div></div>
-  <div class="cert reveal"><div class="cert-ring">ISO<br>13485</div><div class="cert-label">Quality System</div></div>
-  <div class="cert reveal"><div class="cert-ring">EMC</div><div class="cert-label">EM Certified</div></div>
-  <div class="cert reveal"><div class="cert-ring">IEC<br>61010</div><div class="cert-label">Elec. Safety</div></div>
+  <div class="cert reveal delay1"><div class="cert-ring">ISO<br>13485</div><div class="cert-label">Quality System</div></div>
+  <div class="cert reveal delay2"><div class="cert-ring">EMC</div><div class="cert-label">EM Certified</div></div>
+  <div class="cert reveal delay3"><div class="cert-ring">IEC<br>61010</div><div class="cert-label">Elec. Safety</div></div>
   <div class="cert reveal"><div class="cert-ring">GDPR</div><div class="cert-label">Data Compliant</div></div>
 </div>
 
 <!-- CONTACT -->
 <section class="contact" id="contact">
-  <div class="contact-info reveal-left">
-    <div class="s-tag">Get In Touch</div>
-    <h2 class="s-title">Can we<br><em>help</em> you?</h2>
-    <p class="s-body" style="margin-top:1rem">Reach out to our team for product information, distribution inquiries, or technical support.</p>
-    <div style="margin-top:3rem">
-      <div class="cinfo-block"><div class="cinfo-label">Sales</div><div class="cinfo-val"><a href="mailto:sales@mtd-diagnostics.com">sales@mtd-diagnostics.com</a></div></div>
+  <div class="reveal-l">
+    <div class="s-tag" data-i18n="contact.tag">Get In Touch</div>
+    <h2 class="s-title" data-i18n-html="contact.title">Can we<br><em>help</em> you?</h2>
+    <p class="s-body" style="margin-top:1rem" data-i18n="contact.sub">Reach out for product information, distribution inquiries, or technical support.</p>
+    <div style="margin-top:2.5rem">
+      <div class="cinfo-block"><div class="cinfo-label" data-i18n="contact.sales">Sales</div><div class="cinfo-val"><a href="mailto:sales@mtd-diagnostics.com">sales@mtd-diagnostics.com</a></div></div>
       <div class="cinfo-block"><div class="cinfo-label">Info</div><div class="cinfo-val"><a href="mailto:info@mtd-diagnostics.com">info@mtd-diagnostics.com</a></div></div>
-      <div class="cinfo-block"><div class="cinfo-label">Phone</div><div class="cinfo-val"><a href="tel:+390823848984">+39 0823 848984</a><br><a href="tel:+393738850158">+39 373 885 0158</a></div></div>
-      <div class="cinfo-block"><div class="cinfo-label">Address</div><div class="cinfo-val">Via Appia, Loc. Centrangolo<br>81020 San Nicola la Strada (CE) — Italy</div></div>
+      <div class="cinfo-block"><div class="cinfo-label" data-i18n="contact.phone">Phone</div><div class="cinfo-val"><a href="tel:+390823848984">+39 0823 848984</a><br><a href="tel:+393738850158">+39 373 885 0158</a></div></div>
+      <div class="cinfo-block"><div class="cinfo-label" data-i18n="contact.address">Address</div><div class="cinfo-val">Via Appia, Loc. Centrangolo<br>81020 San Nicola la Strada (CE) — Italy</div></div>
     </div>
   </div>
-  <div class="contact-form reveal-right">
+  <div class="contact-form reveal-r">
     <div class="frow">
-      <div class="fgroup"><label class="flabel">First Name</label><input class="finput" type="text" placeholder="Maria"></div>
-      <div class="fgroup"><label class="flabel">Last Name</label><input class="finput" type="text" placeholder="Rossi"></div>
+      <div class="fgroup"><label class="flabel" data-i18n="contact.fname">First Name</label><input class="finput" type="text" data-i18n-ph="contact.ph.fname" placeholder="Maria"></div>
+      <div class="fgroup"><label class="flabel" data-i18n="contact.lname">Last Name</label><input class="finput" type="text" data-i18n-ph="contact.ph.lname" placeholder="Rossi"></div>
     </div>
     <div class="fgroup"><label class="flabel">Email</label><input class="finput" type="email" placeholder="lab@hospital.com"></div>
-    <div class="fgroup"><label class="flabel">Organisation</label><input class="finput" type="text" placeholder="Hospital / Laboratory"></div>
+    <div class="fgroup"><label class="flabel" data-i18n="contact.org">Organisation</label><input class="finput" type="text" data-i18n-ph="contact.ph.org" placeholder="Hospital / Laboratory"></div>
     <div class="fgroup">
-      <label class="flabel">Interest</label>
-      <select class="fselect finput">
-        <option value="">Select a product category…</option>
-        <option>Clinical Chemistry</option><option>Turbidimetry</option>
-        <option>Coagulation</option><option>Hematology</option>
-        <option>Instruments</option><option>Other</option>
+      <label class="flabel" data-i18n="contact.interest">Interest</label>
+      <select class="fselect finput" id="interestSelect">
+        <option value="" data-i18n="contact.selectDefault">Select a product category…</option>
+        <option data-i18n="products.r1name">Clinical Chemistry</option>
+        <option data-i18n="products.r2name">Turbidimetry</option>
+        <option data-i18n="products.r4name">Coagulation</option>
+        <option data-i18n="products.r7name">Hematology</option>
+        <option data-i18n="instruments.tag">Instruments</option>
+        <option data-i18n="contact.other">Other</option>
       </select>
     </div>
-    <div class="fgroup"><label class="flabel">Message</label><textarea class="ftextarea" placeholder="Tell us how we can help…"></textarea></div>
-    <div class="fprivacy"><input type="checkbox" id="priv"><label for="priv">I accept the <a href="#">Privacy Policy</a></label></div>
-    <button class="btn-gold" style="align-self:flex-start;border:none;cursor:pointer"><span>Send Message →</span></button>
+    <div class="fgroup"><label class="flabel" data-i18n="contact.message">Message</label><textarea class="ftextarea" data-i18n-ph="contact.ph.msg" placeholder="Tell us how we can help…"></textarea></div>
+    <div class="fprivacy"><input type="checkbox" id="priv"><label for="priv"><span data-i18n="contact.privacy">I accept the </span><a href="#" data-i18n="contact.privacyLink">Privacy Policy</a></label></div>
+    <button class="btn-gold" style="align-self:flex-start;border:none;cursor:pointer"><span data-i18n="contact.send">Send Message →</span></button>
   </div>
 </section>
 
@@ -530,150 +502,354 @@ footer{background:#040a14;padding:5rem 5rem 3rem;border-top:1px solid rgba(200,1
   <div class="footer-grid">
     <div>
       <div class="footer-logo">MTD Diagnostics S.r.l.</div>
-      <div class="footer-tagline">IVD Solutions for your<br>Laboratory Proficiency</div>
+      <div class="footer-tagline" data-i18n="footer.tagline">IVD Solutions for your<br>Laboratory Proficiency</div>
       <div class="footer-vat">P.IVA / VAT 03907050615</div>
     </div>
     <div>
-      <div class="footer-col-title">Navigation</div>
+      <div class="footer-col-title" data-i18n="footer.nav">Navigation</div>
       <ul class="footer-links">
-        <li><a href="#">Home</a></li><li><a href="#">About Us</a></li>
-        <li><a href="#">Reagents</a></li><li><a href="#">Instruments</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="#home" data-i18n="nav.home">Home</a></li>
+        <li><a href="#about" data-i18n="nav.about">About Us</a></li>
+        <li><a href="#products" data-i18n="nav.products">Products</a></li>
+        <li><a href="#instruments" data-i18n="nav.instruments">Instruments</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-col-title">Products</div>
+      <div class="footer-col-title" data-i18n="footer.prod">Products</div>
       <ul class="footer-links">
-        <li><a href="#">Clinical Chemistry</a></li><li><a href="#">Turbidimetry</a></li>
-        <li><a href="#">Slide Agglutination</a></li><li><a href="#">Coagulation</a></li>
-        <li><a href="#">Controls & Calibrators</a></li><li><a href="#">Hematology</a></li>
+        <li><a href="#products" data-i18n="products.r1name">Clinical Chemistry</a></li>
+        <li><a href="#products" data-i18n="products.r2name">Turbidimetry</a></li>
+        <li><a href="#products" data-i18n="products.r3name">Slide Agglutination</a></li>
+        <li><a href="#products" data-i18n="products.r4name">Coagulation</a></li>
+        <li><a href="#products" data-i18n="products.r7name">Hematology</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-col-title">Legal</div>
+      <div class="footer-col-title" data-i18n="footer.legal">Legal</div>
       <ul class="footer-links">
-        <li><a href="#">Legal Notice</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#" data-i18n="footer.legalNotice">Legal Notice</a></li>
+        <li><a href="#" data-i18n="footer.privacy">Privacy Policy</a></li>
+        <li><a href="#" data-i18n="footer.cookie">Cookie Policy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 MTD Diagnostics S.r.l. — All Rights Reserved.</span>
-    <span>Made in Italy · Worldclass Manufacture</span>
+    <span data-i18n="footer.made">Made in Italy · Worldclass Manufacture</span>
   </div>
 </footer>
 
+<!-- WhatsApp FAB -->
+<a class="fab" href="https://wa.me/393738850158" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
 <script>
-// ── CURSOR ──────────────────────────────────────────────────────
-const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
-(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
-document.querySelectorAll('a,button,.rcard,.icard,.pillar').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{ring.style.transform='translate(-50%,-50%) scale(1.8)';ring.style.borderColor='rgba(200,168,75,.8)'});
-  el.addEventListener('mouseleave',()=>{ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(200,168,75,.5)'});
+// ══════════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════════
+const translations = {
+  en: {
+    "nav.home":"Home","nav.about":"About","nav.products":"Products",
+    "nav.instruments":"Instruments","nav.contact":"Contact",
+    "hero.tag":"IVD Solutions — Made in Italy",
+    "hero.title":"Precision<br><em>Diagnostics</em><br>for the World",
+    "hero.sub":"Reliable reagents and instrumentation for disease screening and diagnosis. European quality, global distribution.",
+    "hero.cta1":"Explore Products →","hero.cta2":"Our Story","hero.scroll":"Scroll",
+    "hero.stat1":"Product Lines","hero.stat2":"Languages","hero.stat3":"Certified",
+    "about.tag":"Who We Are",
+    "about.title":"Experienced team<br>of <em>diagnostic</em><br>professionals",
+    "about.body":"We provide laboratories worldwide with a wide range of reliable reagents and instrumentation for disease screening and diagnosis.",
+    "about.p1title":"European Quality","about.p1text":"EU IVD Directive compliant, certified by accredited third-party bodies for safety and performance.",
+    "about.p2title":"Global Distribution","about.p2text":"From our manufacturing site in Caserta to laboratories across the world — efficient and reliable.",
+    "about.p3title":"Flexible Production","about.p3text":"Adaptable formulation and packaging to meet each partner's specific needs, from small clinics to large hospital facilities.",
+    "numbers.n1":"Product Categories","numbers.n2":"Languages","numbers.n3":"Instrument Lines","numbers.n4":"EU Certified",
+    "products.tag":"Our Reagents","products.title":"Liquid & ready-to-use<br><em>solutions</em> for your lab","products.cta":"View All →",
+    "products.r1name":"Clinical Chemistry","products.r1desc":"Comprehensive enzyme & substrate assays for routine biochemistry panels.",
+    "products.r2name":"Turbidimetry","products.r2desc":"High-sensitivity turbidimetric reagents for protein quantification.",
+    "products.r3name":"Slide Agglutination","products.r3desc":"Fast, reliable latex agglutination tests for serological screening.",
+    "products.r4name":"Coagulation","products.r4desc":"PT, APTT and fibrinogen reagents for coagulation cascade monitoring.",
+    "products.r5name":"Controls & Calibrators","products.r5desc":"Multi-analyte controls and calibrators for QC and instrument setup.",
+    "products.r6name":"Washing Solutions","products.r6desc":"Optimised buffer and washing solutions for automated analysers.",
+    "products.r7name":"Hematology","products.r7desc":"Complete blood count diluents, lysing agents, and controls for hematology analysers.",
+    "instruments.tag":"Our Instruments","instruments.title":"Two lines of devices,<br><em>proven</em> performance",
+    "instruments.sub":"Thoroughly selected and tested by our QC and technical engineers, certified to European standards.",
+    "instruments.i1tag":"Line 01 — Clinical Chemistry","instruments.i1title":"Chemistry<br>Analysers",
+    "instruments.i1text":"A range of semi-automatic and fully-automated biochemistry analysers, from compact benchtop models ideal for small clinics to high-throughput platforms for large hospital laboratories.",
+    "instruments.i1f1":"Compact & high-throughput options","instruments.i1f2":"Optimised for MTD reagent portfolio","instruments.i1f3":"CE-marked & EMC certified","instruments.i1f4":"Full technical support",
+    "instruments.i2tag":"Line 02 — Hematology","instruments.i2title":"Hematology<br>Analysers",
+    "instruments.i2text":"3-diff and 5-diff hematology counters designed for daily laboratory routine, delivering reliable CBC results with user-friendly interfaces.",
+    "instruments.i2f1":"3-diff and 5-diff platforms","instruments.i2f2":"Touch-screen interface","instruments.i2f3":"LIS connectivity","instruments.i2f4":"Low reagent consumption",
+    "contact.tag":"Get In Touch","contact.title":"Can we<br><em>help</em> you?",
+    "contact.sub":"Reach out for product information, distribution inquiries, or technical support.",
+    "contact.sales":"Sales","contact.phone":"Phone","contact.address":"Address",
+    "contact.fname":"First Name","contact.lname":"Last Name","contact.org":"Organisation","contact.interest":"Interest","contact.message":"Message",
+    "contact.selectDefault":"Select a product category…","contact.other":"Other",
+    "contact.privacy":"I accept the ","contact.privacyLink":"Privacy Policy","contact.send":"Send Message →",
+    "contact.ph.fname":"Maria","contact.ph.lname":"Rossi","contact.ph.org":"Hospital / Laboratory","contact.ph.msg":"Tell us how we can help…",
+    "footer.tagline":"IVD Solutions for your<br>Laboratory Proficiency","footer.nav":"Navigation",
+    "footer.prod":"Products","footer.legal":"Legal","footer.legalNotice":"Legal Notice",
+    "footer.privacy":"Privacy Policy","footer.cookie":"Cookie Policy","footer.made":"Made in Italy · Worldclass Manufacture",
+    "marquee":["Clinical Chemistry","Turbidimetry","Coagulation","Hematology","Slide Agglutination","Controls & Calibrators","Made in Italy","CE Certified","Global Distribution"]
+  },
+  it: {
+    "nav.home":"Home","nav.about":"Chi Siamo","nav.products":"Prodotti",
+    "nav.instruments":"Strumenti","nav.contact":"Contatti",
+    "hero.tag":"Soluzioni IVD — Made in Italy",
+    "hero.title":"Diagnostica<br><em>di Precisione</em><br>per il Mondo",
+    "hero.sub":"Reagenti e strumentazione affidabili per lo screening e la diagnosi di malattie. Qualità europea, distribuzione globale.",
+    "hero.cta1":"Esplora i Prodotti →","hero.cta2":"La Nostra Storia","hero.scroll":"Scorri",
+    "hero.stat1":"Linee di Prodotto","hero.stat2":"Lingue","hero.stat3":"Certificato",
+    "about.tag":"Chi Siamo",
+    "about.title":"Un team esperto di<br>professionisti della <em>diagnostica</em>",
+    "about.body":"Forniamo a laboratori di tutto il mondo un'ampia gamma di reagenti e strumentazione affidabili per lo screening e la diagnosi di malattie.",
+    "about.p1title":"Qualità Europea","about.p1text":"Conformi alla Direttiva IVD UE, certificati da organismi terzi accreditati per sicurezza e prestazioni.",
+    "about.p2title":"Distribuzione Globale","about.p2text":"Dal nostro sito produttivo a Caserta fino ai laboratori di tutto il mondo — efficiente e affidabile.",
+    "about.p3title":"Produzione Flessibile","about.p3text":"Formulazione e confezionamento adattabili alle esigenze specifiche di ogni partner, da piccole cliniche a grandi strutture ospedaliere.",
+    "numbers.n1":"Categorie di Prodotto","numbers.n2":"Lingue","numbers.n3":"Linee di Strumenti","numbers.n4":"Certificato UE",
+    "products.tag":"I Nostri Reagenti","products.title":"Soluzioni liquide e<br>pronte all'uso per il tuo <em>laboratorio</em>","products.cta":"Vedi Tutti →",
+    "products.r1name":"Chimica Clinica","products.r1desc":"Test enzimatici e substrati completi per pannelli biochimici di routine.",
+    "products.r2name":"Turbidimetria","products.r2desc":"Reagenti turbidimetrici ad alta sensibilità per la quantificazione delle proteine.",
+    "products.r3name":"Agglutinazione su Vetrino","products.r3desc":"Test di agglutinazione al latex rapidi e affidabili per lo screening sierologico.",
+    "products.r4name":"Coagulazione","products.r4desc":"Reagenti PT, APTT e fibrinogeno per il monitoraggio della cascata coagulativa.",
+    "products.r5name":"Controlli & Calibratori","products.r5desc":"Controlli multianalita e calibratori per il CQ e la configurazione degli strumenti.",
+    "products.r6name":"Soluzioni di Lavaggio","products.r6desc":"Soluzioni tampone e di lavaggio ottimizzate per analizzatori automatici.",
+    "products.r7name":"Ematologia","products.r7desc":"Diluenti per emocromo, agenti lisanti e controlli per analizzatori ematologici.",
+    "instruments.tag":"I Nostri Strumenti","instruments.title":"Due linee di dispositivi,<br>prestazioni <em>comprovate</em>",
+    "instruments.sub":"Selezionati e testati dal nostro team QC e dai tecnici, certificati secondo gli standard europei.",
+    "instruments.i1tag":"Linea 01 — Chimica Clinica","instruments.i1title":"Analizzatori di<br>Chimica Clinica",
+    "instruments.i1text":"Una gamma di analizzatori biochimici semiautomatici e completamente automatici, da modelli compatti da banco ideali per piccole cliniche a piattaforme ad alto rendimento per grandi laboratori ospedalieri.",
+    "instruments.i1f1":"Opzioni compatte e ad alto rendimento","instruments.i1f2":"Ottimizzati per il portfolio reagenti MTD","instruments.i1f3":"Marcato CE e certificato EMC","instruments.i1f4":"Supporto tecnico completo",
+    "instruments.i2tag":"Linea 02 — Ematologia","instruments.i2title":"Analizzatori<br>Ematologici",
+    "instruments.i2text":"Contatori ematologici 3-diff e 5-diff progettati per la routine quotidiana del laboratorio, con risultati CBC affidabili e interfacce intuitive.",
+    "instruments.i2f1":"Piattaforme 3-diff e 5-diff","instruments.i2f2":"Interfaccia touch screen","instruments.i2f3":"Connettività LIS","instruments.i2f4":"Basso consumo di reagenti",
+    "contact.tag":"Contattaci","contact.title":"Possiamo<br><em>aiutarti</em>?",
+    "contact.sub":"Contattaci per informazioni sui prodotti, richieste di distribuzione o supporto tecnico.",
+    "contact.sales":"Commerciale","contact.phone":"Telefono","contact.address":"Indirizzo",
+    "contact.fname":"Nome","contact.lname":"Cognome","contact.org":"Organizzazione","contact.interest":"Interesse","contact.message":"Messaggio",
+    "contact.selectDefault":"Seleziona una categoria…","contact.other":"Altro",
+    "contact.privacy":"Accetto la ","contact.privacyLink":"Privacy Policy","contact.send":"Invia Messaggio →",
+    "contact.ph.fname":"Maria","contact.ph.lname":"Rossi","contact.ph.org":"Ospedale / Laboratorio","contact.ph.msg":"Come possiamo aiutarti?",
+    "footer.tagline":"Soluzioni IVD per la tua<br>Eccellenza di Laboratorio","footer.nav":"Navigazione",
+    "footer.prod":"Prodotti","footer.legal":"Legale","footer.legalNotice":"Note Legali",
+    "footer.privacy":"Privacy Policy","footer.cookie":"Cookie Policy","footer.made":"Made in Italy · Produzione Mondiale",
+    "marquee":["Chimica Clinica","Turbidimetria","Coagulazione","Ematologia","Agglutinazione su Vetrino","Controlli & Calibratori","Made in Italy","Certificato CE","Distribuzione Globale"]
+  },
+  es: {
+    "nav.home":"Inicio","nav.about":"Nosotros","nav.products":"Productos",
+    "nav.instruments":"Instrumentos","nav.contact":"Contacto",
+    "hero.tag":"Soluciones IVD — Made in Italy",
+    "hero.title":"Diagnóstico<br><em>de Precisión</em><br>para el Mundo",
+    "hero.sub":"Reactivos e instrumentación fiables para el cribado y diagnóstico de enfermedades. Calidad europea, distribución global.",
+    "hero.cta1":"Explorar Productos →","hero.cta2":"Nuestra Historia","hero.scroll":"Deslizar",
+    "hero.stat1":"Líneas de Producto","hero.stat2":"Idiomas","hero.stat3":"Certificado",
+    "about.tag":"Quiénes Somos",
+    "about.title":"Un equipo experto<br>de profesionales del <em>diagnóstico</em>",
+    "about.body":"Proporcionamos a laboratorios de todo el mundo una amplia gama de reactivos e instrumentación fiables para el cribado y diagnóstico de enfermedades.",
+    "about.p1title":"Calidad Europea","about.p1text":"Conformes con la Directiva IVD de la UE, certificados por organismos de terceros acreditados para seguridad y rendimiento.",
+    "about.p2title":"Distribución Global","about.p2text":"Desde nuestro sitio de fabricación en Caserta hasta laboratorios de todo el mundo — eficiente y fiable.",
+    "about.p3title":"Producción Flexible","about.p3text":"Formulación y envasado adaptables a las necesidades específicas de cada socio, desde pequeñas clínicas hasta grandes instalaciones hospitalarias.",
+    "numbers.n1":"Categorías de Producto","numbers.n2":"Idiomas","numbers.n3":"Líneas de Instrumentos","numbers.n4":"Certificado UE",
+    "products.tag":"Nuestros Reactivos","products.title":"Soluciones líquidas y<br>listas para usar en tu <em>laboratorio</em>","products.cta":"Ver Todos →",
+    "products.r1name":"Química Clínica","products.r1desc":"Ensayos enzimáticos y de sustrato completos para paneles de bioquímica de rutina.",
+    "products.r2name":"Turbidimetría","products.r2desc":"Reactivos turbidimétricos de alta sensibilidad para la cuantificación de proteínas.",
+    "products.r3name":"Aglutinación en Portaobjetos","products.r3desc":"Pruebas de aglutinación de látex rápidas y fiables para el cribado serológico.",
+    "products.r4name":"Coagulación","products.r4desc":"Reactivos de TP, TTPA y fibrinógeno para el seguimiento de la cascada de coagulación.",
+    "products.r5name":"Controles & Calibradores","products.r5desc":"Controles multianalito y calibradores para el control de calidad y la configuración de instrumentos.",
+    "products.r6name":"Soluciones de Lavado","products.r6desc":"Soluciones tampón y de lavado optimizadas para analizadores automáticos.",
+    "products.r7name":"Hematología","products.r7desc":"Diluyentes para hemograma completo, agentes de lisis y controles para analizadores hematológicos.",
+    "instruments.tag":"Nuestros Instrumentos","instruments.title":"Dos líneas de dispositivos,<br>rendimiento <em>probado</em>",
+    "instruments.sub":"Seleccionados y probados exhaustivamente por nuestros ingenieros de QC y técnicos, certificados según estándares europeos.",
+    "instruments.i1tag":"Línea 01 — Química Clínica","instruments.i1title":"Analizadores de<br>Química Clínica",
+    "instruments.i1text":"Una gama de analizadores bioquímicos semiautomáticos y totalmente automatizados, desde modelos compactos de sobremesa ideales para pequeñas clínicas hasta plataformas de alto rendimiento para grandes laboratorios hospitalarios.",
+    "instruments.i1f1":"Opciones compactas y de alto rendimiento","instruments.i1f2":"Optimizados para el portfolio de reactivos MTD","instruments.i1f3":"Marcado CE y certificado EMC","instruments.i1f4":"Soporte técnico completo",
+    "instruments.i2tag":"Línea 02 — Hematología","instruments.i2title":"Analizadores<br>Hematológicos",
+    "instruments.i2text":"Contadores hematológicos de 3 y 5 diferenciales diseñados para la rutina diaria del laboratorio, con resultados CBC fiables e interfaces intuitivas.",
+    "instruments.i2f1":"Plataformas de 3 y 5 diferenciales","instruments.i2f2":"Interfaz táctil","instruments.i2f3":"Conectividad LIS","instruments.i2f4":"Bajo consumo de reactivos",
+    "contact.tag":"Contáctenos","contact.title":"¿Podemos<br><em>ayudarle</em>?",
+    "contact.sub":"Contáctenos para información sobre productos, consultas de distribución o soporte técnico.",
+    "contact.sales":"Comercial","contact.phone":"Teléfono","contact.address":"Dirección",
+    "contact.fname":"Nombre","contact.lname":"Apellido","contact.org":"Organización","contact.interest":"Interés","contact.message":"Mensaje",
+    "contact.selectDefault":"Seleccione una categoría…","contact.other":"Otro",
+    "contact.privacy":"Acepto la ","contact.privacyLink":"Política de Privacidad","contact.send":"Enviar Mensaje →",
+    "contact.ph.fname":"María","contact.ph.lname":"García","contact.ph.org":"Hospital / Laboratorio","contact.ph.msg":"Cuéntenos cómo podemos ayudarle…",
+    "footer.tagline":"Soluciones IVD para la<br>Excelencia de su Laboratorio","footer.nav":"Navegación",
+    "footer.prod":"Productos","footer.legal":"Legal","footer.legalNotice":"Aviso Legal",
+    "footer.privacy":"Política de Privacidad","footer.cookie":"Política de Cookies","footer.made":"Made in Italy · Fabricación Mundial",
+    "marquee":["Química Clínica","Turbidimetría","Coagulación","Hematología","Aglutinación en Portaobjetos","Controles & Calibradores","Made in Italy","Certificado CE","Distribución Global"]
+  }
+};
+
+let currentLang = localStorage.getItem('mtd-lang') || 'en';
+
+function buildMarquee(lang) {
+  const items = translations[lang].marquee;
+  const track = document.getElementById('marqueeTrack');
+  const doubled = [...items, ...items];
+  track.innerHTML = doubled.map(t => `<div class="marquee-item"><span>✦</span> ${t}</div>`).join('');
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('mtd-lang', lang);
+  document.documentElement.lang = lang;
+
+  // update buttons
+  ['en','it','es'].forEach(l => {
+    document.getElementById('btn-'+l)?.classList.toggle('active', l===lang);
+    document.getElementById('mbtn-'+l)?.classList.toggle('active', l===lang);
+  });
+
+  const t = translations[lang];
+
+  // text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if(t[key] !== undefined) el.textContent = t[key];
+  });
+
+  // html nodes
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if(t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if(t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // select options
+  document.querySelectorAll('#interestSelect option[data-i18n]').forEach(opt => {
+    const key = opt.dataset.i18n;
+    if(t[key] !== undefined) opt.textContent = t[key];
+  });
+
+  buildMarquee(lang);
+}
+
+// init
+setLang(currentLang);
+
+// ── HAMBURGER ──────────────────────────────────────────
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
 });
 
-// ── NAV SCROLL ───────────────────────────────────────────────────
-const nav=document.getElementById('navbar');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+document.querySelectorAll('.mm-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
 
-// ── CANVAS PARTICLE NETWORK ──────────────────────────────────────
-const canvas=document.getElementById('hero-canvas');
-const ctx=canvas.getContext('2d');
-let W,H,particles=[];
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-resize();window.addEventListener('resize',resize);
+// ── NAV SCROLL ─────────────────────────────────────────
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50), {passive:true});
 
-class Particle{
-  constructor(){this.reset()}
-  reset(){
-    this.x=Math.random()*W;this.y=Math.random()*H;
-    this.vx=(Math.random()-.5)*.35;this.vy=(Math.random()-.5)*.35;
-    this.r=Math.random()*2+1;this.alpha=Math.random()*.6+.1;
-    this.pulse=Math.random()*Math.PI*2;
+// ── CANVAS ─────────────────────────────────────────────
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = canvas.parentElement.offsetHeight; }
+resize();
+window.addEventListener('resize', resize, {passive:true});
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random()*W; this.y = Math.random()*H;
+    this.vx = (Math.random()-.5)*.3; this.vy = (Math.random()-.5)*.3;
+    this.r = Math.random()*1.8+.8; this.alpha = Math.random()*.5+.1;
+    this.pulse = Math.random()*Math.PI*2;
   }
-  update(){
-    this.x+=this.vx;this.y+=this.vy;this.pulse+=.025;
-    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  update() {
+    this.x += this.vx; this.y += this.vy; this.pulse += .022;
+    if(this.x<-10||this.x>W+10||this.y<-10||this.y>H+10) this.reset();
   }
-  draw(){
-    const a=this.alpha*(0.7+0.3*Math.sin(this.pulse));
-    ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(200,168,75,${a})`;ctx.fill();
+  draw() {
+    const a = this.alpha*(0.7+0.3*Math.sin(this.pulse));
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(200,168,75,${a})`; ctx.fill();
   }
 }
 
-for(let i=0;i<90;i++)particles.push(new Particle());
+const count = window.innerWidth < 768 ? 45 : 85;
+for(let i=0;i<count;i++) particles.push(new Particle());
 
-let mouse={x:W/2,y:H/2};
-canvas.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+let mouse = {x:W/2, y:H/2};
+canvas.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; }, {passive:true});
 
-function drawLines(){
+function drawLines() {
+  const maxD = window.innerWidth < 768 ? 90 : 120;
   for(let i=0;i<particles.length;i++){
     for(let j=i+1;j<particles.length;j++){
-      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
       const d=Math.sqrt(dx*dx+dy*dy);
-      if(d<130){
-        ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);
-        ctx.strokeStyle=`rgba(200,168,75,${(1-d/130)*.18})`;ctx.lineWidth=.6;ctx.stroke();
+      if(d<maxD){
+        ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(200,168,75,${(1-d/maxD)*.15})`; ctx.lineWidth=.5; ctx.stroke();
       }
     }
-    // mouse attraction
-    const dx=particles[i].x-mouse.x,dy=particles[i].y-mouse.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<160){
-      ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(mouse.x,mouse.y);
-      ctx.strokeStyle=`rgba(200,168,75,${(1-d/160)*.25})`;ctx.lineWidth=.8;ctx.stroke();
+    if(window.innerWidth > 768){
+      const dx=particles[i].x-mouse.x, dy=particles[i].y-mouse.y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<150){
+        ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(mouse.x,mouse.y);
+        ctx.strokeStyle=`rgba(200,168,75,${(1-d/150)*.22})`; ctx.lineWidth=.7; ctx.stroke();
+      }
     }
   }
 }
 
-function animate(){
+function animate() {
   ctx.clearRect(0,0,W,H);
-  // deep gradient bg
-  const grad=ctx.createRadialGradient(W*.35,H*.4,0,W*.5,H*.5,W*.8);
-  grad.addColorStop(0,'rgba(19,37,64,.95)');grad.addColorStop(1,'rgba(8,15,30,1)');
-  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  const grad = ctx.createRadialGradient(W*.35,H*.4,0,W*.5,H*.5,W*.85);
+  grad.addColorStop(0,'rgba(19,37,64,.96)'); grad.addColorStop(1,'rgba(8,15,30,1)');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
   drawLines();
-  particles.forEach(p=>{p.update();p.draw()});
+  particles.forEach(p=>{p.update();p.draw();});
   requestAnimationFrame(animate);
 }
 animate();
 
-// ── INTERSECTION OBSERVER ────────────────────────────────────────
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}});
-},{threshold:.12});
-document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>io.observe(el));
-
-// ── COUNTER ANIMATION ────────────────────────────────────────────
-function animCount(el){
-  const target=+el.dataset.target;
-  let current=0;
-  const step=target/40;
-  const t=setInterval(()=>{
-    current+=step;
-    if(current>=target){current=target;clearInterval(t)}
-    el.textContent=Math.floor(current);
-  },35);
+// ── CURSOR (desktop) ────────────────────────────────────
+if(window.matchMedia('(pointer:fine)').matches){
+  const cursor=document.getElementById('cursor'), ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'},{passive:true});
+  (function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+  document.querySelectorAll('a,button,.rcard,.icard,.pillar,.cert').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ring.style.transform='translate(-50%,-50%) scale(1.7)';ring.style.borderColor='rgba(200,168,75,.8)'});
+    el.addEventListener('mouseleave',()=>{ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(200,168,75,.5)'});
+  });
 }
-const cio=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){animCount(e.target);cio.unobserve(e.target)}});
+
+// ── INTERSECTION OBSERVER ───────────────────────────────
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>io.observe(el));
+
+// ── COUNTERS ────────────────────────────────────────────
+function animCount(el){
+  const target=+el.dataset.target; let current=0;
+  const step=Math.ceil(target/30);
+  const iv=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(iv);}el.textContent=current;},40);
+}
+const cio = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){animCount(e.target);cio.unobserve(e.target);}});
 },{threshold:.5});
 document.querySelectorAll('.counter').forEach(el=>cio.observe(el));
-
-// hero stats quick count
-setTimeout(()=>{
-  document.querySelectorAll('[data-count]').forEach(el=>{
-    const t=+el.dataset.count;let c=0;
-    const iv=setInterval(()=>{c++;el.textContent=c;if(c>=t)clearInterval(iv)},180);
-  });
-  document.querySelectorAll('[data-text]').forEach(el=>{
-    setTimeout(()=>el.textContent=el.dataset.text,600);
-  });
-},1000);
 </script>
 </body>
 </html>
