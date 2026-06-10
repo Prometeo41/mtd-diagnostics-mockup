@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ChatSerena – Chat con correzione automatica</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+  :root{
+    --carta:#FBF7EF; --inchiostro:#27241D;
+    --oliva:#5F6F3E; --oliva-scuro:#46522D;
+    --ambra:#C97B2D; --nebbia:#EDE6D8;
+    --bordo:#D8CFBC; --bianco:#FFFFFF; --rosso:#A4452F;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%; margin:0;}
+  body{
+    font-family:Georgia,'Times New Roman',serif;
+    background:var(--carta); color:var(--inchiostro);
+    font-size:20px; display:flex; flex-direction:column;
+  }
+  button{font-family:inherit;}
+  .schermata{
+    flex:1; display:none; flex-direction:column; justify-content:center;
+    padding:28px; max-width:560px; margin:0 auto; width:100%;
+    overflow-y:auto;
+  }
+  h1{font-size:42px; margin:0 0 6px; letter-spacing:-0.5px; color:var(--oliva-scuro);}
+  .motto{font-style:italic; color:#6b6354; margin:0 0 30px; font-size:21px;}
+  .campo{margin-bottom:20px;}
+  .campo label{display:block; font-weight:bold; margin-bottom:8px; font-size:19px;}
+  .campo input, .campo textarea{
+    width:100%; font-size:22px; padding:14px 16px;
+    border:2px solid var(--bordo); border-radius:14px;
+    background:var(--bianco); font-family:inherit; color:var(--inchiostro);
+  }
+  .campo textarea{font-family:monospace; font-size:15px; min-height:140px;}
+  .campo input:focus, .campo textarea:focus{outline:3px solid var(--oliva); border-color:var(--oliva);}
+  .campo .aiuto{font-size:16px; color:#6b6354; margin-top:6px; line-height:1.45;}
+  .btn-grande{
+    width:100%; font-size:24px; font-weight:bold; padding:18px;
+    background:var(--oliva); color:#fff; border:none; border-radius:16px;
+    cursor:pointer; margin-top:8px;
+  }
+  .btn-grande:active{background:var(--oliva-scuro);}
+  .btn-secondario{
+    width:100%; font-size:18px; padding:13px; margin-top:12px;
+    background:transparent; color:var(--oliva-scuro);
+    border:2px solid var(--bordo); border-radius:14px; cursor:pointer;
+  }
+  .nota{
+    margin-top:24px; font-size:16px; color:#6b6354; line-height:1.5;
+    border-left:4px solid var(--ambra); padding-left:14px;
+  }
+  .passi{font-size:17px; line-height:1.7; color:#4a443a; padding-left:22px; margin:0 0 24px;}
+  .passi a{color:var(--oliva-scuro);}
+  .errore{color:var(--rosso); font-size:17px; min-height:22px; margin-top:10px; text-align:center;}
+
+  /* ---------- CHAT ---------- */
+  #chat{flex:1; display:none; flex-direction:column; height:100%;}
+  #testata{
+    background:var(--oliva-scuro); color:#fff;
+    padding:12px 16px; display:flex; align-items:center; gap:12px;
+  }
+  #testata .stanza{flex:1; min-width:0;}
+  #testata .stanza b{font-size:20px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #testata .stanza span{font-size:14px; opacity:.85;}
+  #btnEsci{
+    background:transparent; border:2px solid rgba(255,255,255,.6); color:#fff;
+    border-radius:10px; padding:8px 14px; font-size:16px; cursor:pointer;
+  }
+  #interruttore{
+    display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer;
+    background:rgba(255,255,255,.12); padding:8px 12px; border-radius:10px; user-select:none;
+  }
+  #interruttore input{width:22px; height:22px;}
+  #messaggi{
+    flex:1; overflow-y:auto; padding:18px 14px 8px;
+    display:flex; flex-direction:column; gap:14px; scroll-behavior:smooth;
+  }
+  .msg{max-width:84%; display:flex; flex-direction:column;}
+  .msg .autore{font-size:15px; color:#6b6354; margin:0 8px 3px;}
+  .msg .bolla{
+    padding:14px 18px; border-radius:18px; font-size:22px; line-height:1.45;
+    word-wrap:break-word; white-space:pre-wrap;
+  }
+  .msg.mio{align-self:flex-end; align-items:flex-end;}
+  .msg.mio .bolla{background:var(--oliva); color:#fff; border-bottom-right-radius:5px;}
+  .msg.altro{align-self:flex-start;}
+  .msg.altro .bolla{background:var(--bianco); border:1.5px solid var(--bordo); border-bottom-left-radius:5px;}
+  .msg .ora{font-size:13px; color:#8a8270; margin:4px 8px 0;}
+  .msg .originale{font-size:14px; color:#8a8270; font-style:italic; margin:3px 8px 0; display:none;}
+  .msg.mostra-orig .originale{display:block;}
+  .corretto-badge{font-size:12px; color:var(--ambra); cursor:pointer; text-decoration:underline dotted;}
+  #vuoto{
+    text-align:center; color:#8a8270; font-style:italic; margin:auto; padding:30px;
+    font-size:19px; line-height:1.6;
+  }
+  #barra{
+    background:var(--nebbia); border-top:2px solid var(--bordo);
+    padding:12px; display:flex; flex-direction:column; gap:10px;
+  }
+  #riga-input{display:flex; gap:10px; align-items:flex-end;}
+  #campoTesto{
+    flex:1; font-size:24px; padding:14px 16px; min-height:62px; max-height:160px;
+    border:2px solid var(--bordo); border-radius:16px; resize:none;
+    font-family:inherit; background:var(--bianco); color:var(--inchiostro); line-height:1.4;
+  }
+  #campoTesto:focus{outline:3px solid var(--oliva); border-color:var(--oliva);}
+  .btn-tondo{
+    width:62px; height:62px; min-width:62px; border-radius:50%;
+    border:none; font-size:26px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #btnMic{background:var(--bianco); border:2px solid var(--bordo);}
+  #btnMic.attivo{background:var(--rosso); color:#fff; border-color:var(--rosso); animation:pulsa 1.2s infinite;}
+  @keyframes pulsa{50%{transform:scale(1.08);}}
+  #btnInvia{background:var(--oliva); color:#fff;}
+  #btnInvia:disabled{opacity:.5;}
+  #stato{font-size:15px; color:#6b6354; text-align:center; min-height:18px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ CONFIGURAZIONE (solo primo avvio) ============ -->
+<div id="config" class="schermata">
+  <h1>ChatSerena</h1>
+  <p class="motto">Configurazione iniziale (si fa una volta sola)</p>
+
+  <ol class="passi">
+    <li>Vai su <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> e crea un progetto (es. "chatserena").</li>
+    <li>Nel menu a sinistra: <b>Crea &gt; Realtime Database</b> &gt; Crea database &gt; regione Belgio &gt; <b>modalità test</b>.</li>
+    <li>Ingranaggio &gt; <b>Impostazioni progetto</b> &gt; sezione "Le tue app" &gt; icona <b>&lt;/&gt;</b> (Web) &gt; registra l'app.</li>
+    <li>Copia il blocco <code>firebaseConfig = { ... }</code> e incollalo qui sotto.</li>
+  </ol>
+
+  <div class="campo">
+    <label for="inFirebase">Configurazione Firebase</label>
+    <textarea id="inFirebase" placeholder='Incolla qui tutto il blocco, es.
+{
+  "apiKey": "AIza...",
+  "authDomain": "chatserena.firebaseapp.com",
+  "databaseURL": "https://chatserena-default-rtdb.europe-west1.firebasedatabase.app",
+  "projectId": "chatserena",
+  ...
+}'></textarea>
+    <div class="aiuto">Va bene anche incollare il codice JavaScript così com'è: la pagina estrae i valori da sola. Verrà salvato solo su questo dispositivo.</div>
+  </div>
+
+  <div class="campo">
+    <label for="inApiKey">Chiave API Anthropic (per la correzione automatica)</label>
+    <input id="inApiKey" type="password" placeholder="sk-ant-..." autocomplete="off">
+    <div class="aiuto">Facoltativa: senza chiave la chat funziona lo stesso, ma senza correzione automatica. Si crea su console.anthropic.com. Resta salvata solo su questo dispositivo, non finisce su GitHub.</div>
+  </div>
+
+  <button id="btnSalvaConfig" class="btn-grande">Salva e continua</button>
+  <div id="erroreConfig" class="errore"></div>
+</div>
+
+<!-- ============ INGRESSO ============ -->
+<div id="ingresso" class="schermata">
+  <h1>ChatSerena</h1>
+  <p class="motto">Scrivi tranquillo: ai refusi pensa lei.</p>
+
+  <div class="campo">
+    <label for="inNome">Il tuo nome</label>
+    <input id="inNome" type="text" placeholder="Es. Giuseppe" maxlength="20" autocomplete="off">
+  </div>
+
+  <div class="campo">
+    <label for="inStanza">Codice della stanza</label>
+    <input id="inStanza" type="text" placeholder="Es. famiglia2026" maxlength="30" autocomplete="off">
+    <div class="aiuto">Chi conosce questo codice può leggere e scrivere nella stanza. Sceglietene uno difficile da indovinare e datelo solo alle persone fidate.</div>
+  </div>
+
+  <button id="btnEntra" class="btn-grande">Entra nella chat</button>
+  <button id="btnRiconfigura" class="btn-secondario">Modifica configurazione (Firebase / chiave API)</button>
+
+  <div class="nota">
+    La stanza è riservata a chi ha il codice. Ogni messaggio viene riletto da un assistente che corregge in automatico gli errori di battitura dovuti al tremore, prima dell'invio. Il testo originale resta sempre consultabile.
+  </div>
+</div>
+
+<!-- ============ CHAT ============ -->
+<div id="chat">
+  <div id="testata">
+    <div class="stanza">
+      <b id="nomeStanza"></b>
+      <span id="nomeUtente"></span>
+    </div>
+    <label id="interruttore">
+      <input type="checkbox" id="chkCorrezione" checked>
+      Correzione
+    </label>
+    <button id="btnEsci">Esci</button>
+  </div>
+
+  <div id="messaggi">
+    <div id="vuoto">Nessun messaggio ancora.<br>Scrivi qui sotto: il testo verrà corretto automaticamente prima dell'invio.</div>
+  </div>
+
+  <div id="barra">
+    <div id="riga-input">
+      <button id="btnMic" class="btn-tondo" title="Detta a voce">🎙️</button>
+      <textarea id="campoTesto" placeholder="Scrivi il messaggio…" rows="1"></textarea>
+      <button id="btnInvia" class="btn-tondo" title="Invia">➤</button>
+    </div>
+    <div id="stato"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  let db = null, refStanza = null;
+  let nome = "", stanza = "";
+  let inviando = false;
+
+  // ---------- Configurazione salvata in localStorage ----------
+  function leggiConfig(){
+    try{ return JSON.parse(localStorage.getItem("chatserena_firebase") || "null"); }
+    catch(e){ return null; }
+  }
+  function leggiApiKey(){ return localStorage.getItem("chatserena_apikey") || ""; }
+
+  // Estrae un oggetto config sia da JSON puro sia da codice JS incollato
+  function estraiConfig(testo){
+    testo = testo.trim();
+    // prova JSON diretto
+    try{ const o = JSON.parse(testo); if(o.apiKey) return o; }catch(e){}
+    // estrae coppie chiave: "valore" dal codice JS
+    const o = {};
+    const re = /(\w+)\s*:\s*["']([^"']+)["']/g;
+    let m;
+    while((m = re.exec(testo)) !== null){ o[m[1]] = m[2]; }
+    return o.apiKey ? o : null;
+  }
+
+  $("btnSalvaConfig").addEventListener("click", () => {
+    const cfg = estraiConfig($("inFirebase").value);
+    if(!cfg){
+      $("erroreConfig").textContent = "Configurazione non riconosciuta: incolla il blocco firebaseConfig completo.";
+      return;
+    }
+    if(!cfg.databaseURL){
+      // ricostruisce l'URL standard europeo se manca
+      if(cfg.projectId){
+        cfg.databaseURL = "https://" + cfg.projectId + "-default-rtdb.europe-west1.firebasedatabase.app";
+      } else {
+        $("erroreConfig").textContent = "Manca databaseURL: verifica di aver creato il Realtime Database.";
+        return;
+      }
+    }
+    localStorage.setItem("chatserena_firebase", JSON.stringify(cfg));
+    const k = $("inApiKey").value.trim();
+    if(k) localStorage.setItem("chatserena_apikey", k);
+    avvia();
+  });
+
+  $("btnRiconfigura").addEventListener("click", () => {
+    const cfg = leggiConfig();
+    if(cfg) $("inFirebase").value = JSON.stringify(cfg, null, 2);
+    $("inApiKey").value = leggiApiKey();
+    mostra("config");
+  });
+
+  function mostra(id){
+    ["config","ingresso"].forEach(x => $(x).style.display = "none");
+    $("chat").style.display = "none";
+    if(id === "chat") $("chat").style.display = "flex";
+    else $(id).style.display = "flex";
+  }
+
+  function avvia(){
+    const cfg = leggiConfig();
+    if(!cfg){ mostra("config"); return; }
+    try{
+      if(!firebase.apps.length) firebase.initializeApp(cfg);
+      db = firebase.database();
+      mostra("ingresso");
+      const ultimoNome = localStorage.getItem("chatserena_nome");
+      const ultimaStanza = localStorage.getItem("chatserena_stanza");
+      if(ultimoNome) $("inNome").value = ultimoNome;
+      if(ultimaStanza) $("inStanza").value = ultimaStanza;
+    }catch(e){
+      mostra("config");
+      $("erroreConfig").textContent = "Configurazione Firebase non valida: " + e.message;
+    }
+  }
+
+  // ---------- Hash del codice stanza (il codice non appare in chiaro nel database) ----------
+  function hashStanza(s){
+    let h1 = 5381, h2 = 52711;
+    for(let i = 0; i < s.length; i++){
+      const c = s.charCodeAt(i);
+      h1 = ((h1 * 33) ^ c) >>> 0;
+      h2 = ((h2 * 31) + c) >>> 0;
+    }
+    return "s" + h1.toString(36) + h2.toString(36);
+  }
+
+  // ---------- Ingresso ----------
+  $("btnEntra").addEventListener("click", entra);
+  $("inStanza").addEventListener("keydown", e => { if(e.key === "Enter") entra(); });
+
+  function entra(){
+    nome = $("inNome").value.trim();
+    const codice = $("inStanza").value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,"");
+    if(!nome){ alert("Scrivi il tuo nome."); return; }
+    if(codice.length < 4){ alert("Il codice stanza deve avere almeno 4 caratteri (lettere o numeri)."); return; }
+    stanza = codice;
+    localStorage.setItem("chatserena_nome", nome);
+    localStorage.setItem("chatserena_stanza", stanza);
+
+    mostra("chat");
+    $("nomeStanza").textContent = "Stanza: " + stanza;
+    $("nomeUtente").textContent = "Connesso come " + nome;
+
+    refStanza = db.ref("stanze/" + hashStanza(stanza) + "/messaggi");
+    refStanza.limitToLast(200).on("child_added", snap => {
+      const m = snap.val();
+      if(!m || !m.testo) return;
+      $("vuoto").style.display = "none";
+      mostraMessaggio(m);
+      scorriFondo();
+    });
+    $("campoTesto").focus();
+  }
+
+  $("btnEsci").addEventListener("click", () => {
+    if(refStanza) refStanza.off();
+    refStanza = null;
+    document.querySelectorAll("#messaggi .msg").forEach(n => n.remove());
+    $("vuoto").style.display = "block";
+    mostra("ingresso");
+  });
+
+  // ---------- Messaggi ----------
+  function mostraMessaggio(m){
+    const div = document.createElement("div");
+    div.className = "msg " + (m.autore === nome ? "mio" : "altro");
+
+    const autore = document.createElement("div");
+    autore.className = "autore";
+    autore.textContent = m.autore || "?";
+    div.appendChild(autore);
+
+    const bolla = document.createElement("div");
+    bolla.className = "bolla";
+    bolla.textContent = m.testo;
+    div.appendChild(bolla);
+
+    const ora = document.createElement("div");
+    ora.className = "ora";
+    const d = new Date(m.quando || Date.now());
+    ora.textContent = d.toLocaleTimeString("it-IT", {hour:"2-digit", minute:"2-digit"});
+
+    if(m.originale && m.originale !== m.testo){
+      const badge = document.createElement("span");
+      badge.className = "corretto-badge";
+      badge.textContent = " · corretto (tocca per vedere)";
+      badge.addEventListener("click", () => div.classList.toggle("mostra-orig"));
+      ora.appendChild(badge);
+
+      const orig = document.createElement("div");
+      orig.className = "originale";
+      orig.textContent = "Originale: " + m.originale;
+      div.appendChild(orig);
+    }
+    div.appendChild(ora);
+    $("messaggi").appendChild(div);
+  }
+
+  function scorriFondo(){
+    const box = $("messaggi");
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ---------- Correzione con IA ----------
+  async function correggi(testo){
+    const chiave = leggiApiKey();
+    if(!chiave) return testo;
+    const prompt = "Sei un correttore per persone con tremore alle mani (Parkinson). " +
+      "Il testo seguente può contenere lettere doppie involontarie, tasti adiacenti premuti per sbaglio, lettere mancanti o scambiate, spazi in mezzo alle parole. " +
+      "Correggi SOLO questi errori di battitura, in italiano. NON cambiare il significato, NON riformulare, NON aggiungere nulla, mantieni il tono e le parole della persona. " +
+      "Se il testo è già corretto, restituiscilo identico. Rispondi ESCLUSIVAMENTE con il testo corretto, senza commenti, senza virgolette.\n\nTesto: " + testo;
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": chiave,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-3-5-haiku-20241022",
+        max_tokens: 1000,
+        messages: [{role: "user", content: prompt}]
+      })
+    });
+    if(!resp.ok) throw new Error("API " + resp.status);
+    const data = await resp.json();
+    const out = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("").trim();
+    return out || testo;
+  }
+
+  // ---------- Invio ----------
+  $("btnInvia").addEventListener("click", invia);
+  $("campoTesto").addEventListener("keydown", e => {
+    if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); invia(); }
+  });
+
+  async function invia(){
+    if(inviando || !refStanza) return;
+    const grezzo = $("campoTesto").value.trim();
+    if(!grezzo) return;
+    inviando = true;
+    $("btnInvia").disabled = true;
+
+    let finale = grezzo;
+    if($("chkCorrezione").checked && leggiApiKey()){
+      imposta("Sto correggendo il testo…");
+      try{ finale = await correggi(grezzo); }
+      catch(e){ imposta("Correzione non riuscita: invio il testo originale."); }
+    }
+
+    try{
+      await refStanza.push({
+        autore: nome,
+        testo: finale,
+        originale: grezzo,
+        quando: Date.now()
+      });
+      $("campoTesto").value = "";
+      imposta("");
+    }catch(e){
+      imposta("Invio non riuscito: controlla la connessione.");
+    }
+    $("btnInvia").disabled = false;
+    inviando = false;
+    $("campoTesto").focus();
+  }
+
+  function imposta(t){ $("stato").textContent = t; }
+
+  // ---------- Dettatura vocale ----------
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(SR){
+    const ric = new SR();
+    ric.lang = "it-IT";
+    ric.interimResults = false;
+    ric.continuous = false;
+    let attivo = false;
+
+    $("btnMic").addEventListener("click", () => {
+      if(attivo){ ric.stop(); return; }
+      try{ ric.start(); }catch(e){}
+    });
+    ric.onstart = () => { attivo = true; $("btnMic").classList.add("attivo"); imposta("Sto ascoltando… parla pure."); };
+    ric.onend = () => { attivo = false; $("btnMic").classList.remove("attivo"); imposta(""); };
+    ric.onerror = () => { attivo = false; $("btnMic").classList.remove("attivo"); imposta("Microfono non disponibile."); };
+    ric.onresult = ev => {
+      const t = ev.results[0][0].transcript;
+      const c = $("campoTesto");
+      c.value = (c.value ? c.value + " " : "") + t;
+      c.focus();
+    };
+  } else {
+    $("btnMic").style.display = "none";
+  }
+
+  avvia();
+})();
+</script>
+</body>
+</html>
